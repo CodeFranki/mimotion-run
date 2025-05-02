@@ -10,17 +10,7 @@ class MiMotion():
         self.headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)"}
 
    #发送酷推
-    def push(self, title, content):
-        try:
-            url = "https://push.xuthus.cc/send/" + skey
-            data = title + "\n" + content
-            # 发送请求
-            res = requests.post(url=url, data=data.encode('utf-8')).text
-            # 输出发送结果
-            print(res)
-        except Exception as e:
-            error_traceback = traceback.format_exc()
-            print(error_traceback)
+
 
     # 推送server
     def push_wx(self,desp=""):
@@ -38,17 +28,22 @@ class MiMotion():
             print(error_traceback)
 
     # 推送telegram
-    def push_telegram(self,msg):
+    def push_telegram(title, content):
         try:
             print("\nTelegram 推送开始")
-            send_data = {"chat_id": tg_user_id, "text": title + '\n\n'+content, "disable_web_page_preview": "true"}
+            send_data = {
+                "chat_id": tg_user_id,
+                "text": f"{title}\n\n{content}",
+                "disable_web_page_preview": "true"
+            }
             response = requests.post(
-                url=f'https://api.telegram.org/bot{tg_bot_token}/sendMessage', data=send_data)
-            print(response.json()['ok'])
+                url=f'https://api.telegram.org/bot{tg_bot_token}/sendMessage',
+                data=send_data
+            )
+            print(response.json())
         except Exception as e:
             error_traceback = traceback.format_exc()
             print(error_traceback)
-
     # 企业微信
     def get_access_token(self):
         try:
@@ -237,7 +232,7 @@ class MiMotion():
                     msg = [
                     {"name": "帐号信息", "value": f"{user[:4]}****{user[-4:]}"},
                     {"name": "修改信息", "value": f"{response['message']}"},
-                    {"name": "修改步数", "value": f"{step}\n"},
+                    {"name": "修改步数", "value": f"{step}\n\n"},
                     ]
                 else:
                     msg = [
@@ -254,7 +249,8 @@ if __name__ == "__main__":
     try:
         #with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "/root/config.json"), "r", encoding="utf-8") as f:
             #datas = json.loads(f.read())
-        datas = json.loads(os.environ["CONFIG"])
+        with open("config.json", "r", encoding="utf-8") as f:
+            datas = json.load(f)
         # 开启根据地区天气情况降低步数（默认关闭）
         if datas.get("OPEN_GET_WEATHER"):
             open_get_weather = datas.get("OPEN_GET_WEATHER")
@@ -286,12 +282,12 @@ if __name__ == "__main__":
             sckey = datas.get("SCKEY")
             MiMotion(check_item=_check_item).push_wx(msg)
         # 推送telegram
-        if datas.get("TG_BOT_TOKEN") or datas.get("TG_USER_ID") :
+        if datas.get("TG_BOT_TOKEN") and datas.get("TG_USER_ID"):
             tg_bot_token = datas.get("TG_BOT_TOKEN")
             tg_user_id = datas.get("TG_USER_ID")
-            MiMotion(check_item=_check_item).push_telegram(msg)
+            MiMotion.push_telegram('【小米运动步数修改】', msg)  # 使用类名调用静态方法
         else:
-            print("Telegram推送的tg_bot_token或者tg_user_id未设置!!\n取消推送")
+            print("Telegram推送的tg_bot_token或tg_user_id未设置，取消推送")
         # 企业微信推送
         # 是否开启企业微信推送false关闭true开启，默认关闭，开启后请填写设置并将上面两个都留空
         if datas.get("POSITION"):
