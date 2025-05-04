@@ -1,0 +1,30 @@
+{
+  "TG_BOT_TOKEN": "5254317539:AAE3vwpUT5pSgXsbbyQCISe0upCxZAlKZ2Q",
+  "TG_USER_ID": "5267661060",
+  "SKEY": "",
+  "SCKEY": "",
+  "POSITION": "",
+  "CORPID": "",
+  "CORPSECRET": "",
+  "AGENTID": "",
+  "TOUSER": "",
+  "TOPARTY": "",
+  "TOTAG": "",
+  "OPEN_GET_WEATHER": "",
+  "AREA": "",
+  "QWEATHER": "",
+  "MIMOTION": [
+    {
+      "max_step": 30000,
+      "min_step": 20000,
+      "password": "WQZwqz134882@",
+      "user": "1962629154@qq.com"
+    },
+    {
+      "max_step": 30000,
+      "min_step": 20000,
+      "password": "xzl9952791314",
+      "user": "2356653631@qq.com"
+    }
+  ]
+}
